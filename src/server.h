@@ -489,6 +489,7 @@ typedef void (*moduleTypeDigestFunc)(struct RedisModuleDigest *digest, void *val
 typedef size_t (*moduleTypeMemUsageFunc)(const void *value);
 typedef void (*moduleTypeFreeFunc)(void *value);
 
+// 这里就有点面向接口编程的味道了
 /* The module type, which is referenced in each value of a given type, defines
  * the methods and links to the module exporting the type. */
 typedef struct RedisModuleType {
@@ -582,6 +583,7 @@ typedef struct RedisModuleDigest {
 #define LRU_CLOCK_RESOLUTION 1000 /* LRU clock resolution in ms */
 
 #define OBJ_SHARED_REFCOUNT INT_MAX
+// redis实现的对象机制？也有引用计数
 typedef struct redisObject {
     unsigned type:4;
     unsigned encoding:4;
@@ -608,6 +610,7 @@ struct evictionPoolEntry; /* Defined in evict.c */
 /* Redis database representation. There are multiple databases identified
  * by integers from 0 (the default database) up to the max configured
  * database. The database number is the 'id' field in the structure. */
+// 一个db就是一坨的dict
 typedef struct redisDb {
     dict *dict;                 /* The keyspace for this DB */
     dict *expires;              /* Timeout of keys with a timeout set */
@@ -673,6 +676,7 @@ typedef struct readyList {
 
 /* With multiplexing we need to take per-client state.
  * Clients are taken in a linked list. */
+// 客户端，每个客户端里有一个DB的指针，表名当前client连的是哪个DB
 typedef struct client {
     uint64_t id;            /* Client incremental unique ID. */
     int fd;                 /* Client socket. */
@@ -871,6 +875,7 @@ struct clusterState;
 #define CHILD_INFO_TYPE_RDB 0
 #define CHILD_INFO_TYPE_AOF 1
 
+// server 结构体
 struct redisServer {
     /* General */
     pid_t pid;                  /* Main process pid. */
@@ -1210,6 +1215,7 @@ typedef struct pubsubPattern {
 
 typedef void redisCommandProc(client *c);
 typedef int *redisGetKeysProc(struct redisCommand *cmd, robj **argv, int argc, int *numkeys);
+// redis命令的结构体。估计是用第一个单词来判断是哪个命令，然后用 `redisCommandProc` 指向的函数来执行
 struct redisCommand {
     char *name;
     redisCommandProc *proc;
