@@ -458,7 +458,7 @@ int aeWait(int fd, int mask, long long milliseconds) {
 
 void aeMain(aeEventLoop *eventLoop) {
     eventLoop->stop = 0;
-    while (!eventLoop->stop) {
+    while (!eventLoop->stop) { // 循环，有事件就处理
         if (eventLoop->beforesleep != NULL)
             eventLoop->beforesleep(eventLoop);
         aeProcessEvents(eventLoop, AE_ALL_EVENTS|AE_CALL_AFTER_SLEEP);

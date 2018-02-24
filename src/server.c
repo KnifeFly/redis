@@ -3694,6 +3694,7 @@ int redisIsSupervised(int mode) {
 }
 
 
+// main函数，redis-server的入口
 int main(int argc, char **argv) {
     struct timeval tv;
     int j;
@@ -3736,7 +3737,7 @@ int main(int argc, char **argv) {
     getRandomHexChars(hashseed,sizeof(hashseed));
     dictSetHashFunctionSeed((uint8_t*)hashseed);
     server.sentinel_mode = checkForSentinelMode(argc,argv);
-    initServerConfig();
+    initServerConfig(); // 初始化服务端设置
     moduleInitModulesSystem();
 
     /* Store the executable path and arguments in a safe place in order
@@ -3884,7 +3885,7 @@ int main(int argc, char **argv) {
 
     aeSetBeforeSleepProc(server.el,beforeSleep);
     aeSetAfterSleepProc(server.el,afterSleep);
-    aeMain(server.el);
+    aeMain(server.el); // 传入一个event loop
     aeDeleteEventLoop(server.el);
     return 0;
 }
